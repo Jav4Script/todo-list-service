@@ -1,0 +1,43 @@
+# Ignore environment files
+.env
+
+# Ignore Python bytecode
+__pycache__/
+*.py[cod]
+
+# Ignore virtual environment
+venv/
+bin/
+include/
+lib/
+pyvenv.cfg
+
+# Ignore migrations cache
+migrations/__pycache__/
+
+# Ignore alembic files
+alembic.ini
+migrations/env.py
+migrations/script.py.mako
+migrations/versions/
+
+# Ignore Docker files
+docker-compose.yml
+
+# Ignore IDE specific files
+.vscode/
+.idea/
+
+# Ignore logs
+*.log
+
+# Ignore compiled files
+*.so
+*.dylib
+*.dll
+
+# Ignore setuptools and distutils
+*.egg-info/
+.eggs/
+dist/
+build/
