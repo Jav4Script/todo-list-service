@@ -4,12 +4,13 @@ from fastapi.testclient import TestClient
 from unittest.mock import MagicMock
 
 from app.main import app
+from app.task.entities.task import Task
 from app.task.infrastructure.database.task_repository import SQLAlchemyTaskRepository
-from app.core.use_cases.create_task import CreateTaskUseCase
-from app.core.use_cases.delete_task import DeleteTaskUseCase
-from app.core.use_cases.get_task import GetTaskUseCase
-from app.core.use_cases.list_tasks import ListTasksUseCase
-from app.core.use_cases.update_task import UpdateTaskUseCase
+from app.task.use_cases.create_task import CreateTaskUseCase
+from app.task.use_cases.delete_task import DeleteTaskUseCase
+from app.task.use_cases.get_task import GetTaskUseCase
+from app.task.use_cases.list_tasks import ListTasksUseCase
+from app.task.use_cases.update_task import UpdateTaskUseCase
 
 
 @pytest.fixture(scope="module")
@@ -21,6 +22,14 @@ def client():
 @pytest.fixture(scope="module")
 def repository():
     return MagicMock()
+
+
+@pytest.fixture(scope="module")
+def tasks():
+    return [
+        Task("Test Task", "This is a test task."),
+        Task("Another Task", "This is another task."),
+    ]
 
 
 @pytest.fixture(scope="module")
