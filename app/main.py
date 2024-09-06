@@ -1,9 +1,11 @@
+import ast
 import os
 import uvicorn
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.middleware.cors import CORSMiddleware
 
 from app.shared.infrastructure.exception_handlers import (
     generic_exception_handler,
@@ -17,6 +19,17 @@ load_dotenv()
 
 def create_app():
     app = FastAPI()
+
+    cors_origins = os.getenv("CORS_ORIGINS", "[]")
+    cors_origins = ast.literal_eval(cors_origins)
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=cors_origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     app.add_exception_handler(HTTPException, http_exception_handler)
     app.add_exception_handler(StarletteHTTPException, starlette_exception_handler)
