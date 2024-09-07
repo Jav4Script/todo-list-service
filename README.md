@@ -93,9 +93,12 @@ POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
 POSTGRES_PASSWORD=todo_password
 POSTGRES_USER=todo_user
+
+# Network
+CORS_ORIGINS=["http://localhost", "http://localhost:9000"]
 ```
 
-Create the tables in the database using Alembic migrations.
+Create the tables in the database using Alembic migrations:
 
 ```bash
 alembic init migrations
