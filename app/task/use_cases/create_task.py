@@ -1,4 +1,4 @@
-from app.task.entities.task import Task
+from app.task.entities.task import Task, TaskCreate
 from app.task.repositories.task_repository import ITaskRepository
 
 
@@ -9,8 +9,8 @@ class CreateTaskUseCase:
     def __init__(self, repository: ITaskRepository):
         self.repository = repository
 
-    def execute(self, title: str, description: str = "") -> Task:
-        task = Task(title, description)
+    def execute(self, task_data: TaskCreate) -> Task:
+        task = Task(Task(task_data.title, task_data.description))
 
         self.repository.add(task)
 

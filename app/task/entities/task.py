@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from pydantic import BaseModel
 from uuid import uuid4, UUID
 from typing import Optional
 
@@ -16,3 +17,14 @@ class Task:
         self.title = title
         self.description = description if description is not None else self.description
         self.updated_at = datetime.now(timezone.utc)
+
+
+class TaskCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+
+
+class TaskResponse(BaseModel):
+    id: UUID
+    title: str
+    description: Optional[str] = None

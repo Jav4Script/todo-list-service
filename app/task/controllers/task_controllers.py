@@ -1,9 +1,8 @@
 from fastapi import APIRouter, FastAPI, Depends
-from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from typing import List, Optional
-from uuid import UUID
+from typing import List
 
+from app.task.entities.task import TaskCreate, TaskResponse
 from app.task.use_cases.create_task import CreateTaskUseCase
 from app.task.use_cases.delete_task import DeleteTaskUseCase
 from app.task.use_cases.get_task import GetTaskUseCase
@@ -15,17 +14,6 @@ from app.task.infrastructure.config.database import get_database
 router = APIRouter()
 
 
-class TaskCreate(BaseModel):
-    title: str
-    description: Optional[str] = None
-
-
-class TaskResponse(BaseModel):
-    id: UUID
-    title: str
-    description: Optional[str] = None
-
-
 @router.post(
     "/tasks",
     response_model=TaskResponse,
@@ -33,9 +21,11 @@ class TaskResponse(BaseModel):
     summary="Create a new task",
     description="Create a new task with a title and optional description.",
 )
-def create_task_controller(data: TaskCreate, database: Session = Depends(get_database)):
+def create_task_controller(
+    task_data: TaskCreate, database: Session = Depends(get_database)
+):
     use_case = CreateTaskUseCase(SQLAlchemyTaskRepository(database))
-    task = use_case.execute(data.title, data.description)
+    task = use_case.execute(task_data)
 
     return {"id": task.id, "title": task.title, "description": task.description}
 
@@ -92,10 +82,10 @@ def list_tasks_controller(database: Session = Depends(get_database)):
     description="Update a task by its ID.",
 )
 def update_task_controller(
-    task_id: str, data: TaskCreate, database: Session = Depends(get_database)
+    task_id: str, task_data: TaskCreate, database: Session = Depends(get_database)
 ):
     use_case = UpdateTaskUseCase(SQLAlchemyTaskRepository(database))
-    task = use_case.execute(task_id, data.title, data.description)
+    task = use_case.execute(task_id, task_data)
 
     return {"id": task.id, "title": task.title, "description": task.description}
 

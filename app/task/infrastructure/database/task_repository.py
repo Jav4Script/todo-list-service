@@ -22,6 +22,7 @@ class SQLAlchemyTaskRepository(ITaskRepository):
 
     def get(self, task_id: UUID) -> Task:
         task_model = self.database.query(TaskModel).filter_by(id=str(task_id)).first()
+
         if task_model:
             return Task(
                 id=task_model.id,
@@ -30,10 +31,12 @@ class SQLAlchemyTaskRepository(ITaskRepository):
                 created_at=task_model.created_at,
                 updated_at=task_model.updated_at,
             )
+
         return None
 
     def update(self, task: Task) -> None:
         task_model = self.database.query(TaskModel).filter_by(id=str(task.id)).first()
+
         if task_model:
             task_model.title = task.title
             task_model.description = task.description
@@ -41,12 +44,14 @@ class SQLAlchemyTaskRepository(ITaskRepository):
 
     def delete(self, task_id: UUID) -> None:
         task_model = self.database.query(TaskModel).filter_by(id=str(task_id)).first()
+
         if task_model:
             self.database.delete(task_model)
             self.database.commit()
 
     def list(self) -> List[Task]:
         task_models = self.database.query(TaskModel).all()
+
         return [
             Task(
                 id=task.id,
