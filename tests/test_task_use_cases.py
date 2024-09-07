@@ -3,7 +3,7 @@ import pytest
 from uuid import uuid4
 from unittest.mock import MagicMock
 
-from app.task.entities.task import Task
+from app.task.entities.task import Task, TaskCreate
 from app.shared.exceptions.custom_exceptions import NotFoundException
 from app.task.use_cases.create_task import CreateTaskUseCase
 from app.task.use_cases.delete_task import DeleteTaskUseCase
@@ -15,12 +15,12 @@ from app.task.use_cases.update_task import UpdateTaskUseCase
 def test_create_task_success(
     create_task_use_case: CreateTaskUseCase, tasks: list[Task]
 ):
-    task = tasks[0]
+    task_data = TaskCreate(title=tasks[0].title, description=tasks[0].description)
 
-    created_task = create_task_use_case.execute(task.title, task.description)
+    created_task = create_task_use_case.execute(task_data)
 
-    assert created_task.title == task.title
-    assert created_task.description == task.description
+    assert created_task.title == task_data.title
+    assert created_task.description == task_data.description
     assert created_task.id is not None
 
 
@@ -28,7 +28,9 @@ def test_create_task_failure(create_task_use_case: CreateTaskUseCase):
     create_task_use_case.execute = MagicMock(side_effect=ValueError)
 
     with pytest.raises(ValueError):
-        create_task_use_case.execute("", "This task has no title.")
+        create_task_use_case.execute(
+            TaskCreate(title="", description="This task has no title.")
+        )
 
 
 def test_get_task_success(get_task_use_case: GetTaskUseCase, tasks: list[Task]):
@@ -62,28 +64,30 @@ def test_list_tasks_success(list_tasks_use_case: ListTasksUseCase, tasks: list[T
 
 
 def test_update_task_success(
-    update_task_use_case: UpdateTaskUseCase,
-    get_task_use_case: GetTaskUseCase,
-    tasks: list[Task],
+    update_task_use_case: UpdateTaskUseCase, tasks: list[Task]
 ):
     task = tasks[0]
+    task_data = TaskCreate(title=task.title, description=task.description)
 
-    update_task_use_case.execute = MagicMock()
-    get_task_use_case.execute = MagicMock()
+    update_task_use_case.execute = MagicMock(return_value=task)
 
-    update_task_use_case.execute(task)
+    updated_task = update_task_use_case.execute(task.id, task_data)
 
-    update_task_use_case.execute.assert_called_once_with(task)
+    assert updated_task.id == task.id
+    assert updated_task.title == task_data.title
+    assert updated_task.description == task_data.description
 
 
 def test_update_task_failure(update_task_use_case: UpdateTaskUseCase):
-    non_existent_task = Task("Non-existent Task", "This task does not exist.")
-    non_existent_task.id = uuid4()
+    non_existent_task_id = uuid4()
+    task_data = TaskCreate(
+        title="Non-existent Task", description="This task does not exist."
+    )
 
     update_task_use_case.execute = MagicMock(side_effect=NotFoundException)
 
     with pytest.raises(NotFoundException):
-        update_task_use_case.execute(non_existent_task)
+        update_task_use_case.execute(non_existent_task_id, task_data)
 
 
 def test_delete_task_success(
