@@ -10,7 +10,7 @@ from app.task.entities.task import Task
 # DRY: Defines a common contract for all task repositories.
 class ITaskRepository(ABC):
     @abstractmethod
-    def add(self, task: Task) -> None:
+    def add(self, task: Task) -> Task:
         pass
 
     @abstractmethod

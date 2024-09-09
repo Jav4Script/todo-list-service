@@ -12,6 +12,6 @@ class CreateTaskUseCase:
     def execute(self, task_data: TaskCreate) -> Task:
         task = Task(task_data.title, task_data.description)
 
-        self.repository.add(task)
+        created_task = self.repository.add(task)
 
-        return task
+        return created_task

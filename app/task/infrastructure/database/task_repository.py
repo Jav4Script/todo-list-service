@@ -15,10 +15,15 @@ class SQLAlchemyTaskRepository(ITaskRepository):
     def __init__(self, database: Session):
         self.database = database
 
-    def add(self, task: Task) -> None:
+    def add(self, task: Task) -> Task:
         task_model = TaskModel(title=task.title, description=task.description)
         self.database.add(task_model)
         self.database.commit()
+        self.database.refresh(task_model)
+
+        return Task(
+            id=task_model.id, title=task_model.title, description=task_model.description
+        )
 
     def get(self, task_id: UUID) -> Task:
         task_model = self.database.query(TaskModel).filter_by(id=str(task_id)).first()
