@@ -13,15 +13,23 @@ from app.task.use_cases.update_task import UpdateTaskUseCase
 
 
 def test_create_task_success(
-    create_task_use_case: CreateTaskUseCase, tasks: list[Task]
+    create_task_use_case: CreateTaskUseCase, repository: MagicMock
 ):
-    task_data = TaskCreate(title=tasks[0].title, description=tasks[0].description)
+    task_data = TaskCreate(title="Test Task", description="This is a test task.")
+    created_task = Task(
+        id=uuid4(),
+        title=task_data.title,
+        description=task_data.description,
+    )
 
-    created_task = create_task_use_case.execute(task_data)
+    repository.add.return_value = created_task
 
-    assert created_task.title == task_data.title
-    assert created_task.description == task_data.description
-    assert created_task.id is not None
+    result_task = create_task_use_case.execute(task_data)
+
+    assert result_task.title == task_data.title
+    assert result_task.description == task_data.description
+    assert result_task.id is not None
+    assert isinstance(result_task.id, uuid4().__class__)
 
 
 def test_create_task_failure(create_task_use_case: CreateTaskUseCase):
