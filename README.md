@@ -51,7 +51,7 @@ This project is a simple TODO-LIST system, developed with **Python** and **FastA
 ### 2. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/todo-list-service.git
+git clone https://github.com/Jav4Script/todo-list-service.git
 cd todo-list-service
 ```
 
@@ -68,7 +68,7 @@ Create and activate the virtual environment:
 ```bash
 python3 -m venv venv
 source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate  # Windows
+venv\\Scripts\\activate  # Windows
 ```
 
 Install the dependencies:
@@ -79,7 +79,7 @@ pip install -r requirements.txt
 
 ### 5. Configure the Database
 
-Create a .env file at the root of the project with the following environment variables:
+Create a `.env` file at the root of the project with your local environment variables. Do not commit this file.
 
 ```plaintext
 # Environment
@@ -88,11 +88,11 @@ APP_ENV=development
 PYTHONPATH=.
 
 # Database
-POSTGRES_DB=todo_list
+POSTGRES_DB=<your-postgres-database>
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
-POSTGRES_PASSWORD=todo_password
-POSTGRES_USER=todo_user
+POSTGRES_PASSWORD=<your-postgres-password>
+POSTGRES_USER=<your-postgres-user>
 
 # Network
 CORS_ORIGINS=["http://localhost", "http://localhost:9000"]
